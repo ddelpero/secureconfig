@@ -14,7 +14,7 @@ A secure, encrypted configuration management package for Go applications. Store 
 ## Installation
 
 ```bash
-go get github.com/yourusername/secureconfig
+go get github.com/ddelpero/secureconfig
 ```
 
 ## Quick Start
@@ -27,7 +27,7 @@ package main
 import (
     "fmt"
     "log"
-    "github.com/yourusername/secureconfig"
+    "github.com/ddelpero/secureconfig"
 )
 
 func main() {

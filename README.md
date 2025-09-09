@@ -69,7 +69,7 @@ A command-line tool is included for managing secrets from the terminal:
 
 ```bash
 # Install the CLI tool
-go install github.com/yourusername/secureconfig/cmd/secureconfig-cli
+go install github.com/ddelpero/secureconfig/cmd/secureconfig-cli
 
 # Store a secret
 secureconfig-cli database.password mySecretPassword123

@@ -41,7 +41,9 @@ func NewConfigWithFile(filename string) (*Config, error) {
 	}
 
 	configPath := findDataFile(c.ConfigFile)
+	fileExists := true
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		fileExists = false
 		// Generate new key if config doesn't exist
 		key := make([]byte, 32) // 256-bit key for AES-256
 		if _, err := io.ReadFull(rand.Reader, key); err != nil {
@@ -54,8 +56,10 @@ func NewConfigWithFile(filename string) (*Config, error) {
 		}
 	}
 
-	if err := c.loadDB(); err != nil {
-		return nil, err
+	if fileExists {
+		if err := c.loadDB(); err != nil {
+			return nil, err
+		}
 	}
 
 	// Decode the key from hex
@@ -263,6 +267,7 @@ func (c *Config) loadDB() error {
 
 func (c *Config) writeSecretsFile() error {
 	filename := findDataFile(c.ConfigFile)
+	fmt.Printf("Writing config file: %s\n", filename)
 
 	// Ensure directory exists
 	dir := filepath.Dir(filename)
@@ -315,7 +320,7 @@ func (c *Config) writeSecretsFile() error {
 
 // findDataFile finds the appropriate location for the config file
 func findDataFile(filename string) string {
-	fmt.Printf("Searching for config file: %s\n", filename)
+	//fmt.Printf("Searching for config file: %s\n", filename)
 	// Check current directory first
 	if _, err := os.Stat(filename); err == nil {
 		return filename
@@ -332,6 +337,6 @@ func findDataFile(filename string) string {
 	// }
 
 	// Fallback to current directory
-	fmt.Printf("Falling back to current directory for config file\n")
+	// fmt.Printf("Falling back to current directory for config file\n")
 	return filename
 }

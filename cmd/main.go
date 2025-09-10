@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ddelpero/secureconfig/secureconfig"
+	"github.com/ddelpero/secureconfig"
 )
 
 func main() {

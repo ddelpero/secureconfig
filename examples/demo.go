@@ -4,17 +4,18 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"github.com/ddelpero/secureconfig"
 )
 
 func main() {
 	// Clean up any existing test file
-	os.Remove("test_secureconfig.json")
+	os.Remove("test_secureconfig.bin")
 
 	fmt.Println("=== SecureConfig Demo ===")
 
 	// Create a new configuration
-	config, err := secureconfig.NewConfigWithFile("test_secureconfig.json")
+	config, err := secureconfig.NewConfigWithFile("test_secureconfig.bin")
 	if err != nil {
 		log.Fatal("Failed to create config:", err)
 	}
@@ -23,8 +24,8 @@ func main() {
 
 	// Store some test values
 	testData := map[string]string{
-		"database.password":    "superSecret123!",
-		"api.stripe.key":       "sk_live_1234567890",
+		"database.password":   "superSecret123!",
+		"api.stripe.key":      "sk_live_1234567890",
 		"jwt.secret":          "my-jwt-secret-key",
 		"email.smtp.password": "smtp-password-456",
 	}
@@ -79,5 +80,6 @@ func main() {
 	}
 
 	fmt.Println("\n=== Demo Complete ===")
-	fmt.Println("Check the generated test_secureconfig.json file to see the encrypted data!")
+	fmt.Println("Check the generated test_secureconfig.bin file!")
+	fmt.Println("The binary format provides enhanced security by obfuscating the data structure.")
 }

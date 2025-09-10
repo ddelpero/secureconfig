@@ -1,7 +1,7 @@
 module secureconfig-examples
 
-go 1.19
+go 1.24.3
 
-replace github.com/ddelpero/secureconfig => ../secureconfig-pkg
+require github.com/ddelpero/secureconfig v1.1.2
 
-require github.com/ddelpero/secureconfig 
+replace github.com/ddelpero/secureconfig => ../secureconfig

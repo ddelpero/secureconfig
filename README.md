@@ -7,14 +7,18 @@ A secure, encrypted configuration management package for Go applications. Store 
 - **AES-256-GCM Encryption**: Industry-standard encryption for maximum security
 - **Simple API**: Easy-to-use interface for storing and retrieving encrypted values
 - **Auto Key Generation**: Automatically generates and manages encryption keys
-- **JSON Storage**: Stores encrypted data in human-readable JSON format
+- **Binary Storage**: Stores encrypted data in secure binary format (not human-readable)
 - **Cross-Platform**: Works on Windows, macOS, and Linux
 - **No External Dependencies**: Uses only Go standard library
 
 ## Installation
 
 ```bash
+# Install the package
 go get github.com/ddelpero/secureconfig
+
+# Or install the latest version
+go get github.com/ddelpero/secureconfig@latest
 ```
 
 ## Quick Start
@@ -27,7 +31,7 @@ package main
 import (
     "fmt"
     "log"
-    "github.com/ddelpero/secureconfig"
+    "github.com/ddelpero/secureconfig/secureconfig"
 )
 
 func main() {
@@ -57,7 +61,7 @@ func main() {
 
 ```go
 // Use a custom configuration file
-config, err := secureconfig.NewConfigWithFile("myapp.secrets.json")
+config, err := secureconfig.NewConfigWithFile("myapp.secrets.bin")
 if err != nil {
     log.Fatal(err)
 }
@@ -69,13 +73,31 @@ A command-line tool is included for managing secrets from the terminal:
 
 ```bash
 # Install the CLI tool
-go install github.com/ddelpero/secureconfig/cmd/secureconfig-cli
+go install github.com/ddelpero/secureconfig/cmd@main
 
 # Store a secret
 secureconfig-cli database.password mySecretPassword123
 
-# The encrypted data is stored in secureconfig.json
+# The encrypted data is stored in secureconfig.bin
 ```
+
+### Building CLI Tool Locally
+
+If you prefer to build the CLI tool locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/ddelpero/secureconfig.git
+cd secureconfig
+
+# Build the CLI tool
+go build -o secureconfig-cli cmd/main.go
+
+# Use the tool
+./secureconfig-cli database.password mySecretPassword123
+```
+
+**Note**: The CLI tool is located in `cmd/main.go` and provides a simple interface for storing encrypted values. For more advanced operations (retrieve, list, delete), use the Go API directly in your applications.
 
 ## API Reference
 
@@ -87,7 +109,7 @@ The main configuration struct that handles encryption and storage.
 ### Functions
 
 #### NewConfig() (*Config, error)
-Creates a new secure configuration instance using the default file (`secureconfig.json`).
+Creates a new secure configuration instance using the default file (`secureconfig.bin`).
 
 #### NewConfigWithFile(filename string) (*Config, error)
 Creates a new secure configuration instance with a custom filename.
@@ -125,18 +147,22 @@ The encryption key is automatically generated when you first create a configurat
 2. **Backup**: Regularly backup your configuration files
 3. **Environment Separation**: Use different config files for different environments
 4. **Access Control**: Limit who can read the configuration files
+5. **Binary Security**: The binary format makes it much harder to identify and attack encrypted data
 
 ## File Storage
 
-Configuration data is stored in JSON format:
+Configuration data is stored in a secure binary format that includes:
 
-```json
-{
-  "k": "encrypted_key_base64",
-  "encrypted_key_1": "encrypted_value_1_base64",
-  "encrypted_key_2": "encrypted_value_2_base64"
-}
-```
+- **Magic Header**: "SCFG" identifier for file type recognition
+- **Version Information**: Format version for future compatibility
+- **Encrypted Key-Value Pairs**: All data is AES-256-GCM encrypted
+- **Length-Prefixed Entries**: Each entry includes length information for parsing
+
+The binary format provides several security advantages:
+- **Not Human-Readable**: Cannot be easily inspected with text editors
+- **Structure Obfuscation**: No visible JSON structure to exploit
+- **Metadata Protection**: Entry lengths and structure are not exposed
+- **Attack Resistance**: Much harder to identify encrypted content
 
 The file is created automatically in:
 1. Current working directory (if writable)
@@ -209,6 +235,9 @@ MIT License - see LICENSE file for details.
 
 ## Security Considerations
 
+- **Binary Format Security**: The binary storage format makes it much harder to identify and attack encrypted data compared to JSON
+- **No Plain Text Exposure**: Configuration structure and metadata are not visible in the binary format
+- **Obfuscated Content**: Encrypted data appears as random bytes, not recognizable base64 strings
 - This package is suitable for local application configuration
 - For production systems with multiple users, consider using dedicated secret management services
 - Regularly rotate your encryption keys

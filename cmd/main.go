@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"github.com/ddelpero/secureconfig"
+
+	"github.com/ddelpero/secureconfig/secureconfig"
 )
 
 func main() {
